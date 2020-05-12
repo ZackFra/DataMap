@@ -1,0 +1,27 @@
+---
+title: "Interactive Data Map"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(stringr)
+
+arrest_tab <- read_csv("http://www.hcbravo.org/IntroDataSci/misc/BPD_Arrests.csv")
+dat <- arrest_tab %>% 
+  filter(!is.na(`Location 1`)) %>%
+  separate(`Location 1`, c("lat","lng"), sep=",") %>%
+  mutate(lat=as.numeric(str_replace(lat, "\\(", ""))) %>%
+  mutate(lng=as.numeric(str_replace(lng, "\\)", ""))) %>%
+  sample_n(2000)
+dat
+```
+
+```{r}
+library(leaflet)
+
+balto_map <- leaflet(dat) %>%
+  addTiles() %>%
+  setView(lat=39.29, lng=-76.61, zoom=11)
+balto_map
+```
