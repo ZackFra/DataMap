@@ -17,11 +17,28 @@ dat <- arrest_tab %>%
 dat
 ```
 
+So what I did is I embedded circles with colors to indicate sex. Red circles represent crimes
+peroptrated by males, yellow circles represent crimes committed by females.
+
 ```{r}
 library(leaflet)
 
+# Create a palette that maps factor levels to colors
+pal <- colorFactor(c("yellow", "red"), domain = c("M", "F"))
+
 balto_map <- leaflet(dat) %>%
   addTiles() %>%
+  addCircleMarkers(
+    ~lng, 
+    ~lat, 
+    radius=10,
+    color=~pal(sex),
+    stroke=F,
+    fillOpacity = 0.5,
+    popup=~chargeDescription, 
+    label=~incidentLocation,
+    clusterOptions = markerClusterOptions()
+    ) %>% 
   setView(lat=39.29, lng=-76.61, zoom=11)
 balto_map
 ```
